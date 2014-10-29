@@ -25,7 +25,7 @@ class GetSearchTestField(AutoSelect2MultipleField):
         the referenced value and the shown value
         In this particular example, the referenced value and the shown value are the same
         """
-        return unicode(value)
+        return str(value)
 
 class GetModelSearchTestField(AutoModelSelect2MultipleField):
     """

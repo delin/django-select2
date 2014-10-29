@@ -37,7 +37,7 @@ class AutoViewFieldMixin(object):
         :type auto_id: :py:obj:`unicode`
 
         """
-        name = kwargs.pop('auto_id', u"%s.%s" % (self.__module__, self.__class__.__name__))
+        name = kwargs.pop('auto_id', "%s.%s" % (self.__module__, self.__class__.__name__))
         if logger.isEnabledFor(logging.INFO):
             logger.info("Registering auto field: %s", name)
 
@@ -517,9 +517,9 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
         to be a subset of all possible choices.
     """
     default_error_messages = {
-        'invalid_choice': _(u'Select a valid choice. %(value)s is not one of the available choices.'),
+        'invalid_choice': _('Select a valid choice. %(value)s is not one of the available choices.'),
     }
-    empty_value = u''
+    empty_value = ''
     "Sub-classes can set this other value if needed."
 
     def __init__(self, *args, **kwargs):
@@ -600,8 +600,8 @@ class HeavyMultipleChoiceField(HeavyChoiceField):
     """
     hidden_widget = forms.MultipleHiddenInput
     default_error_messages = {
-        'invalid_choice': _(u'Select a valid choice. %(value)s is not one of the available choices.'),
-        'invalid_list': _(u'Enter a list of values.'),
+        'invalid_choice': _('Select a valid choice. %(value)s is not one of the available choices.'),
+        'invalid_list': _('Enter a list of values.'),
     }
 
     def to_python(self, value):
@@ -700,7 +700,7 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
         try:
             key = self.to_field_name or 'pk'
             value = self.queryset.get(**{key: value})
-        except ValueError, e:
+        except ValueError as e:
             raise ValidationError(self.error_messages['invalid_choice'])
         except self.queryset.model.DoesNotExist:
             value = self.create_new_value(value)
@@ -810,34 +810,28 @@ class AutoSelect2TagField(AutoViewFieldMixin, HeavySelect2TagField):
 
 ### Heavy field, specialized for Model, that uses central AutoView ###
 
-class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2ChoiceField):
+class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2ChoiceField, metaclass=UnhideableQuerysetType):
     """
     Auto Heavy Select2 field, specialized for Models.
 
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
-    # ModelChoiceField will set this to ModelChoiceIterator
-    # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2Widget
 
 
-class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2MultipleChoiceField):
+class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2MultipleChoiceField, metaclass=UnhideableQuerysetType):
     """
     Auto Heavy Select2 field for multiple choices, specialized for Models.
 
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
-    # Makes sure that user defined queryset class variable is replaced by
-    # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2MultipleWidget
 
-class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2TagField):
+class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2TagField, metaclass=UnhideableQuerysetType):
     """
     Auto Heavy Select2 field for tagging, specialized for Models.
 
@@ -860,8 +854,5 @@ class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyMo
                 return {'tag': value}
 
     """
-    # Makes sure that user defined queryset class variable is replaced by
-    # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2TagWidget

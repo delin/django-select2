@@ -9,7 +9,7 @@ from .fields import GetSearchTestField, GetModelSearchTestField
 from django.core.exceptions import ValidationError
 
 def validate_fail_always(value):
-    raise ValidationError(u'%s not valid. Infact nothing is valid!' % value)
+    raise ValidationError('%s not valid. Infact nothing is valid!' % value)
 
 ############# Choice fields ###################
 
@@ -60,7 +60,7 @@ class SelfChoices(AutoSelect2Field):
 
 class SelfMultiChoices(AutoSelect2MultipleField):
     big_data = {
-        1: u"First", 2: u"Second", 3: u"Third",
+        1: "First", 2: "Second", 3: "Third",
     }
 
     def validate_value(self, value):
@@ -126,7 +126,7 @@ class MixedForm(forms.Form):
         widget=AutoHeavySelect2Widget(
             select2_options={
                 'width': '32em',
-                'placeholder': u"Search foo"
+                'placeholder': "Search foo"
             }
         )
     )
